@@ -28,6 +28,10 @@ def count_files():
     # return Response(json.dumps(response_data, ensure_ascii=False), content_type='application/json')
     return jsonify({'message': f'There are {file_count} files in the "public" folder.'})
 
+# 监听 Render 指定的端口
+port = int(os.getenv("PORT", 5000))  # 如果未设置PORT，默认5000
+app.run(debug=True, host='0.0.0.0', port=port)
+
 # 启动 Flask 应用
 if __name__ == '__main__':
     app.run(debug=True, port=5000)
