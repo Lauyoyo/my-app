@@ -45,14 +45,22 @@ app = Flask(__name__)
 
 @app.route('/webhook', methods=['POST'])
 def webhook():
+    print(f"Headers: {request.headers}")
+    print(f"Content-Type: {request.content_type}")
+
+    # Check Content-Type
     if request.content_type != 'application/json':
         return jsonify({"error": "Invalid Content-Type"}), 415
 
-    data = request.json
-    if not data:
-        return jsonify({"error": "No JSON received"}), 400
+    # Parsing JSON data
+    try:
+        data = request.json
+        print(f"Received data: {data}")
+    except Exception as e:
+        print(f"Error parsing JSON: {e}")
+        return jsonify({"error": "Failed to parse JSON"}), 400
 
-    print(f"Received data: {data}")
+    # Return successful response
     return jsonify({"message": "Webhook received", "data": data}), 200
 
 if __name__ == "__main__":
