@@ -1,49 +1,46 @@
 name: Run Python Scripts
 
 on:
-  workflow_dispatch: # Manual trigger
   push:
     branches:
       - main
-  issues: # Triggered when an issue is created
+  workflow_dispatch: # Manual trigger
 
 jobs:
   run-scripts:
     runs-on: ubuntu-latest
 
+    env:
+      NAME: "Lauyoyo"
+      NUM1: "10"
+      NUM2: "5"
+      OPERATION: "+"
+      TARGET_DIRECTORY: "/home/runner/work/my-app/my-app/public"
+
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+    - name: Checkout code
+      uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.10'
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
 
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
 
-      - name: Run Hello World
-        env:
-          USER_NAME: "GitHub Runner"
-        run: python src/hello_world.py
+    - name: Run Hello World
+      run: python src/hello_world.py
 
-      - name: Run Calculator
-        env:
-          NUM1: "10"
-          OPERATION: "+"
-          NUM2: "5"
-        run: python src/calculator.py
+    - name: Run Calculator
+      run: python src/calculator.py
 
-      - name: Run Guess Number
-        env:
-          ATTEMPTS: "10"
-        run: python src/guess_number.py
+    - name: Run Guess Number
+      run: python src/guess_number.py
 
-      - name: Run Monitor Directory
-        env:
-          TARGET_DIRECTORY: "./public"
-          MONITOR_TIMEOUT: "10"
-        run: python src/monitor_directory.py
+    - name: Run Monitor Directory
+      run: python src/monitor_directory.py
 
+    - name: Complete job
+      run: echo "All scripts executed successfully!"
