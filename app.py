@@ -35,8 +35,18 @@ app = Flask(__name__)
 # Webhooks handle routing
 @app.route('/webhook', methods=['POST'])
 def webhook():
+    # Gets the GitHub event type
+    event = request.headers.get('X-GitHub-Event')
     data = request.json
-    issue_title = data.get('issue', {}).get('title', '')
+
+    # Handling ping events
+    if event == 'ping':
+        print("Received ping event")
+        return jsonify({"message": "Ping event received"}), 200
+
+    # Deal with issues
+    if event == 'issues':
+        issue_title = data.get('issue', {}).get('title', '')
 
     # Fire the corresponding Python script based on the Issue title
     if "Run Calculator" in issue_title:
@@ -64,6 +74,8 @@ def webhook():
         "output": output,
         "error": error
     }), 200
+
+
 
 # Launching Flask application
 if __name__ == "__main__":
