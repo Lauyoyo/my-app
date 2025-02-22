@@ -1,10 +1,10 @@
-from flask import Flask, request, jsonify
-import hmac
-import hashlib
-import subprocess
-import os
+# from flask import Flask, request, jsonify
+# import hmac
+# import hashlib
+# import subprocess
+# import os
 
-app = Flask(__name__)
+# app = Flask(__name__)
 
 # WEBHOOK_SECRET = os.getenv('WEBHOOK_SECRET', 'your_webhook_secret')
 
@@ -34,13 +34,26 @@ app = Flask(__name__)
 
 #     return jsonify({"message": "Webhook received"}), 200
 
+
+# if __name__ == '__main__':
+#     app.run(host="0.0.0.0", port=3000)
+
+
+from flask import Flask, request, jsonify
+
+app = Flask(__name__)
+
 @app.route('/webhook', methods=['POST'])
 def webhook():
+    if request.content_type != 'application/json':
+        return jsonify({"error": "Invalid Content-Type"}), 415
+
     data = request.json
+    if not data:
+        return jsonify({"error": "No JSON received"}), 400
+
     print(f"Received data: {data}")
-    return jsonify({"message": "Webhook received"}), 200
+    return jsonify({"message": "Webhook received", "data": data}), 200
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     app.run(host="0.0.0.0", port=3000)
-
-
