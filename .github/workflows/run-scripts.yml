@@ -25,15 +25,25 @@ jobs:
           python -m pip install --upgrade pip
 
       - name: Run Hello World
+        env:
+          USER_NAME: "GitHub Runner"
         run: python src/hello_world.py
 
       - name: Run Calculator
-        run: |
-          echo -e "1\n+\n2" | python src/calculator.py
+        env:
+          NUM1: "10"
+          OPERATION: "+"
+          NUM2: "5"
+        run: python src/calculator.py
 
       - name: Run Guess Number
-        run: |
-          echo -e "50\n25\n75\n100" | python src/guess_number.py
+        env:
+          ATTEMPTS: "10"
+        run: python src/guess_number.py
 
       - name: Run Monitor Directory
+        env:
+          TARGET_DIRECTORY: "./public"
+          MONITOR_TIMEOUT: "10"
         run: python src/monitor_directory.py
+
