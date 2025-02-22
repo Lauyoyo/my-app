@@ -48,34 +48,35 @@ def webhook():
     if event == 'issues':
         issue_title = data.get('issue', {}).get('title', '')
 
-    # Fire the corresponding Python script based on the Issue title
-    if "Run Calculator" in issue_title:
-        script = "src/calculator.py"
-    elif "Run Guess" in issue_title:
-        script = "src/guess_number.py"
-    elif "Run Hello" in issue_title:
-        script = "src/hello_world.py"
-    elif "Run Monitor" in issue_title:
-        script = "src/monitor_directory.py"
-    else:
-        return jsonify({"error": "Unknown command"}), 400
+        # Fire the corresponding Python script based on the Issue title
+        if "Run Calculator" in issue_title:
+            script = "src/calculator.py"
+        elif "Run Guess" in issue_title:
+            script = "src/guess_number.py"
+        elif "Run Hello" in issue_title:
+            script = "src/hello_world.py"
+        elif "Run Monitor" in issue_title:
+            script = "src/monitor_directory.py"
+        else:
+            return jsonify({"error": "Unknown command"}), 400
 
-    # Run the corresponding Python script
-    try:
-        result = subprocess.run(["python", script], capture_output=True, text=True)
-        output = result.stdout
-        error = result.stderr
-    except Exception as e:
-        return jsonify({"error": f"Failed to run script: {str(e)}"}), 500
+        # Run the corresponding Python script
+        try:
+            result = subprocess.run(["python", script], capture_output=True, text=True)
+            output = result.stdout
+            error = result.stderr
+        except Exception as e:
+            return jsonify({"error": f"Failed to run script: {str(e)}"}), 500
 
-    # Return execution result
-    return jsonify({
-        "message": "Script executed",
-        "output": output,
-        "error": error
-    }), 200
+        # Return execution result
+        return jsonify({
+            "message": "Script executed",
+            "output": output,
+            "error": error
+        }), 200
 
-
+    # Handle unknown events
+    return jsonify({"error": "Unknown event"}), 400
 
 # Launching Flask application
 if __name__ == "__main__":
