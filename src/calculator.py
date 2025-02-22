@@ -2,10 +2,9 @@ import os
 
 def calculator():
     print("Simple calculator")
-
-    num1 = float(os.getenv("NUM1", 1))  # Read environment variable, default 1
+    num1 = float(os.getenv("NUM1", "0"))
     operation = os.getenv("OPERATION", "+")
-    num2 = float(os.getenv("NUM2", 2))
+    num2 = float(os.getenv("NUM2", "0"))
 
     if operation == '+':
         print(f"result: {num1 + num2}")
