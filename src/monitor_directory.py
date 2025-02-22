@@ -2,28 +2,25 @@ import os
 import time
 
 def monitor_directory(directory):
-    """
-    Monitor folder changes
-    :param directory: target directory
-    """
     if not os.path.exists(directory):
-        print(f"directory '{directory}' does not exist。")
+        print(f"Directory '{directory}' does not exist.")
         return
 
     print(f"Start monitoring directory: {directory}")
     before = set(os.listdir(directory))
+    timeout = int(os.getenv("MONITOR_TIMEOUT", "30"))  # 监控超时时间（秒）
 
-    while True:
-        time.sleep(5)  # Check every 5 seconds
+    start_time = time.time()
+    while time.time() - start_time < timeout:
+        time.sleep(5)
         after = set(os.listdir(directory))
-        added = after - before  # New file
+        added = after - before
         if added:
             print(f"New file: {added}")
         before = after
 
-if __name__ == "__main__":
-    # Setting a monitoring Directory
-    target_directory = "/Users/Lauyoyo/my-app/public"  
+    print(f"Monitoring ended after {timeout} seconds.")
 
-    # Start monitoring
+if __name__ == "__main__":
+    target_directory = os.getenv("TARGET_DIRECTORY", "./public")
     monitor_directory(target_directory)
