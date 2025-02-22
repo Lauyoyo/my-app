@@ -1,8 +1,11 @@
+import os
+
 def calculator():
     print("Simple calculator")
-    num1 = float(input("Enter the first number: "))
-    operation = input("Select operation (+, -, *, /): ")
-    num2 = float(input("Enter the second number: "))
+
+    num1 = float(os.getenv("NUM1", 1))  # Read environment variable, default 1
+    operation = os.getenv("OPERATION", "+")
+    num2 = float(os.getenv("NUM2", 2))
 
     if operation == '+':
         print(f"result: {num1 + num2}")
