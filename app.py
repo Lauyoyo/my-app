@@ -5,22 +5,26 @@ import hashlib
 import os
 from dotenv import load_dotenv
 
-# Load environment variable
+# Load environment variables from .env
 load_dotenv()
 
 app = Flask(__name__)
 
-# Read a configuration from an environment variable
+# Read configuration from environment variables
 APP_ID = os.getenv("APP_ID")
 WEBHOOK_SECRET = os.getenv("WEBHOOK_SECRET")
 PRIVATE_KEY = os.getenv("GITHUB_PRIVATE_KEY", "").replace("\\n", "\n")
+
+# Log environment variables for debugging
+print(f"🔍 APP_ID: {APP_ID}")
+print(f"🔍 WEBHOOK_SECRET: {'Set' if WEBHOOK_SECRET else 'Not Set'}")
+print(f"🔍 PRIVATE_KEY Length: {len(PRIVATE_KEY)} characters")
 
 # Validate environment variables
 if not APP_ID or not WEBHOOK_SECRET or not PRIVATE_KEY:
     raise ValueError("❌ APP_ID, WEBHOOK_SECRET, or GITHUB_PRIVATE_KEY is not set or invalid")
 
 print("✅ All environment variables loaded successfully.")
-
 
 # Initialize the GitHub API client
 def get_github_client():
@@ -32,9 +36,18 @@ def get_github_client():
 
 # Verify the Webhook signature
 def verify_signature(payload, signature):
+    if not signature:
+        print("❌ Missing signature header.")
+        return False
+
     hash_object = hmac.new(WEBHOOK_SECRET.encode(), payload, hashlib.sha256)
     expected_signature = "sha256=" + hash_object.hexdigest()
-    return hmac.compare_digest(signature, expected_signature)
+
+    if not hmac.compare_digest(signature, expected_signature):
+        print(f"❌ Signature mismatch.\nExpected: {expected_signature}\nReceived: {signature}")
+        return False
+
+    return True
 
 # Webhook endpoint
 @app.route("/webhook", methods=["POST"])
