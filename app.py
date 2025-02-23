@@ -6,14 +6,19 @@ import os
 from dotenv import load_dotenv
 
 # Load environment variable
-load_dotenv()
+load_dotenv(dotenv_path=".env", override=True)
+if not os.getenv("WEBHOOK_SECRET"):
+    raise ValueError("WEBHOOK_SECRET is not set or invalid")
+
 
 app = Flask(__name__)
 
 # Read a configuration from an environment variable
 APP_ID = os.getenv("APP_ID")
 WEBHOOK_SECRET = os.getenv("WEBHOOK_SECRET")
-PRIVATE_KEY = os.getenv("GITHUB_PRIVATE_KEY").replace("\\n", "\n") 
+PRIVATE_KEY = os.getenv("GITHUB_PRIVATE_KEY", "").replace("\\n", "\n").strip()
+if not PRIVATE_KEY:
+    raise ValueError("GITHUB_PRIVATE_KEY is not set or invalid")
 
 # Initialize the GitHub API client
 def get_github_client():
@@ -93,7 +98,6 @@ def handle_webhook():
         print(f"An error occurred while processing an event: {str(e)}")
 
     return jsonify({"status": "success"})
-
 
 @app.route('/')
 def home():
