@@ -8,7 +8,7 @@ def monitor_directory(directory):
 
     print(f"Start monitoring directory: {directory}")
     before = set(os.listdir(directory))
-    timeout = int(os.getenv("MONITOR_TIMEOUT", "30"))  # 监控超时时间（秒）
+    timeout = int(os.getenv("MONITOR_TIMEOUT", "30"))  
 
     start_time = time.time()
     while time.time() - start_time < timeout:
